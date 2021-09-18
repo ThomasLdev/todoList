@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+
+  database:
+    image: mysql
+    container_name: db_todolist
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      - dev
+
+  www:
+    build: php
+    container_name: www_todolist
+    ports:
+      - "8741:80"
+    volumes:
+      - ./:/var/www
+    networks:
+      - dev
+
+networks:
+  dev:
+
+volumes:
+  db-data:

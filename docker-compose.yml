@@ -5,6 +5,8 @@ services:
   database:
     image: mysql
     container_name: db_todolist
+    ports:
+      - "3306:3306"
     volumes:
       - db-data:/var/lib/mysql
     environment:
@@ -12,13 +14,14 @@ services:
     networks:
       - dev
 
-  www:
-    build: php
-    container_name: www_todolist
+  php:
+    build: .
+    container_name: php_todolist
     ports:
-      - "8741:80"
+      - "8000:80"
     volumes:
-      - ./:/var/www
+      - ./:/var/www/html
+      - ./php/host:/etc/apache2/sites-enabled
     networks:
       - dev
 

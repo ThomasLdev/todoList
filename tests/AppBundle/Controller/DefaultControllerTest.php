@@ -8,13 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultControllerTest extends WebTestCase
 {
+    private $client = null;
+
+    public function setUp()
+    {
+        $this->client = static::createClient();
+    }
+
     public function testIndexAction()
     {
-        $client = static::createClient();
-        $client->request('GET', '/');
+        $this->client->request('GET', '/');
         $this->assertEquals(
             Response::HTTP_FOUND,
-            $client->getResponse()->getStatusCode()
+            $this->client->getResponse()->getStatusCode()
         );
     }
 
@@ -23,15 +29,12 @@ class DefaultControllerTest extends WebTestCase
      */
     public function testRedirectToLoginAction()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
-        $crawler->
+        $this->client->request('GET', '/');
+        $this->client->doRedirection();
     }
 
     public function testCreateUserAction()
     {
-        $client = static::createClient();
-        $client->request('GET', '/');
-
+        //TODO
     }
 }

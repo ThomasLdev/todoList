@@ -13,8 +13,25 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/');
         $this->assertEquals(
-            Response::HTTP_OK,
+            Response::HTTP_FOUND,
             $client->getResponse()->getStatusCode()
         );
+    }
+
+    /**
+     * @depends testIndexAction
+     */
+    public function testRedirectToLoginAction()
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/');
+        $crawler->
+    }
+
+    public function testCreateUserAction()
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+
     }
 }

@@ -1,4 +1,5 @@
 language: php
+
 php:
   - '7.1'
 
@@ -8,4 +9,4 @@ script:
   - sbt clean coverage test
 
 after_success:
-  - sbt coveralls
+  - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'

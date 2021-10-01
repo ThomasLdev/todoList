@@ -30,7 +30,6 @@ class DefaultControllerTest extends WebTestCase
     public function testRedirectToLoginAction()
     {
         $this->client->request('GET', '/');
-        $this->client->doRedirection();
     }
 
     public function testCreateUserAction()

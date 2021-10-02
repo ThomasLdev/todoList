@@ -2,7 +2,6 @@
 
 namespace Tests\AppBundle\Controller;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,23 +16,19 @@ class DefaultControllerTest extends WebTestCase
 
     public function testIndexAction()
     {
+        // Simuler une auth ok
         $this->client->request('GET', '/');
         $this->assertEquals(
-            Response::HTTP_FOUND,
+            Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
         );
     }
 
-    /**
-     * @depends testIndexAction
-     */
-    public function testRedirectToLoginAction()
-    {
-        $this->client->request('GET', '/');
-    }
-
-    public function testCreateUserAction()
-    {
-        //TODO
-    }
+//    /**
+//     * @depends testIndexAction
+//     */
+//    public function testCreateUserAction()
+//    {
+//        $this->client->request('GET', '/');
+//    }
 }

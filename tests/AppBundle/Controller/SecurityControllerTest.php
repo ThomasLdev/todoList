@@ -2,12 +2,24 @@
 
 namespace Tests\AppBundle\Controller;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SecurityControllerTest extends TestCase
+class SecurityControllerTest extends WebTestCase
 {
-    public function testLoginAction()
-    {
+    private $client = null;
 
+    public function setUp()
+    {
+        $this->client = static::createClient();
+    }
+
+    public function testLoginTrueAction()
+    {
+        $credentials = [
+            'username' => 'ThomasLdev',
+            'password' => 'test12345'
+        ];
+// Find how to test redirection in phpunit 5.7
+//        $this->post('login', $credentials)->assertRedirect('/');
     }
 }

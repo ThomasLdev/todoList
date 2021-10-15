@@ -3,6 +3,7 @@
 namespace Tests\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class SecurityControllerTest extends WebTestCase
 {
@@ -13,13 +14,24 @@ class SecurityControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function testLoginTrueAction()
+    public function testLoginAction()
     {
-        $credentials = [
-            'username' => 'ThomasLdev',
-            'password' => 'test12345'
-        ];
-// Find how to test redirection in phpunit 5.7
-//        $this->post('login', $credentials)->assertRedirect('/');
+        $crawler = $this->client->request('GET', '/login');
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
+
+        $form = $crawler->selectButton('Se connecter')->form();
+        $form['_username'] = 'ThomasLdev';
+        $form['_password'] = 'test12345';
+        $this->client->submit($form);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Bienvenue sur Todo List")')->count()
+        );
     }
 }

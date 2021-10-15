@@ -15,5 +15,5 @@
 /vendor/
 /web/bundles/
 .idea
-docker-compose.yml.old
 /php
+.git

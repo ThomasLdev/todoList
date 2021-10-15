@@ -19,7 +19,7 @@ class DefaultControllerTest extends WebTestCase
         // Simuler une auth ok
         $this->client->request('GET', '/');
         $this->assertEquals(
-            Response::HTTP_OK,
+            Response::HTTP_FOUND,
             $this->client->getResponse()->getStatusCode()
         );
     }

@@ -5,7 +5,7 @@ php:
 script:
   - composer install
   - vendor/bin/phpunit
-  - sbt clean coverage test
+#  - sbt clean coverage test
 
-after_success:
-  - sbt coveralls
+#after_success:
+#  - sbt coveralls

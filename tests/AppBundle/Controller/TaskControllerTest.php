@@ -16,7 +16,6 @@ class TaskControllerTest extends WebTestCase
         $this->client = static::createClient();
         $this->taskName = 'TestTask'.uniqid();
         $this->taskContent = 'Lorem ipsum.';
-
     }
 
     public function testListAction()
@@ -35,6 +34,8 @@ class TaskControllerTest extends WebTestCase
             $crawler->filter('.row .col-md-12')->count()
         );
     }
+
+    // Rajouter un test emptyTask
 
     public function testCreateAction()
     {
@@ -60,7 +61,7 @@ class TaskControllerTest extends WebTestCase
     {
         $this->logIn();
 
-        $crawler = $this->client->request('GET', '/tasks/3/edit');
+        $crawler = $this->client->request('GET', '/tasks/10/edit');
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
@@ -89,8 +90,9 @@ class TaskControllerTest extends WebTestCase
         $form = $crawler->selectButton('Marquer comme faite')->form();
         $this->client->submit($form);
 
-        // LE FLASH N'APPARAIT PAS DONC VOIR COMMENT VERIF L'ACTION
-//        $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
     }
 
     public function testDeleteTaskAction()
@@ -106,16 +108,17 @@ class TaskControllerTest extends WebTestCase
         $form = $crawler->selectButton('Supprimer')->form();
         $this->client->submit($form);
 
-        // LE FLASH N'APPARAIT PAS DONC VOIR COMMENT VERIF L'ACTION
-//        $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
     }
 
     private function logIn()
     {
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = 'ThomasLdev';
-        $form['_password'] = 'test12345';
+        $form['_username'] = 'user_1';
+        $form['_password'] = 'test1234';
         $this->client->submit($form);
     }
 

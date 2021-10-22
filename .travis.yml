@@ -6,7 +6,6 @@ php:
 script:
   - composer install
   - vendor/bin/phpunit
-#  - vendor/bin/behat
 
 after_success:
   - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'

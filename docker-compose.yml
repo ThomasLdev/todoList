@@ -24,8 +24,6 @@ services:
       - ./php/host:/etc/apache2/sites-enabled
     networks:
       - dev
-#    links:
-#      - database
 
 networks:
   dev:

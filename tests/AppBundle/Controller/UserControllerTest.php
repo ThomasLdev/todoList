@@ -2,30 +2,34 @@
 
 namespace Tests\AppBundle\Controller;
 
+use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\Common\DataFixtures\Loader;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends WebTestCase
 {
     private $client = null;
-    private $username;
-    private $email;
-    private $password;
-    private $roles;
 
-    public function setUp()
+    protected function setUp()
     {
+//        // Set up a dummy client for tests
         $this->client = static::createClient();
-        $this->username = 'TestUser'.time();
-        $this->email = 'test-'.uniqid().'@example.com';
-        $this->password = 'test1234';
-        $this->roles = 'ROLE_USER';
+
+        // Load clean fixtures for each test
+//        $loader = new Loader();
+//        $loader->loadFromDirectory('src/AppBundle/DataFixtures/ORM');
+//        $purger = new ORMPurger();
+//        $executor = new ORMExecutor($em, $purger);
+//        $executor->execute($loader->getFixtures(), true);
+        $kernel = self::bootKernel();
+        $this->addFixture
     }
 
     public function testAdminListAction()
     {
-        // LOAD FIXTURES
-
         // LIST_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(true);
 
@@ -44,14 +48,10 @@ class UserControllerTest extends WebTestCase
             0,
             $crawler->filter('html:contains("Actions")')->count()
         );
-
-        // RELOAD FIXTURES
     }
 
     public function testUserListAction()
     {
-        // LOAD FIXTURES
-
         // LIST_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(false);
 
@@ -60,14 +60,10 @@ class UserControllerTest extends WebTestCase
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
         );
-
-        // RELOAD FIXTURES
     }
 
     public function testAdminCreateAction()
     {
-        // LOAD FIXTURES
-
         // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(true);
 
@@ -98,14 +94,10 @@ class UserControllerTest extends WebTestCase
             0,
             $crawler->filter('html:contains('.$this->username.')')->count()
         );
-
-        // RELOAD FIXTURES
     }
 
     public function testUserCreateAction()
     {
-        // LOAD FIXTURES
-
         // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(false);
 
@@ -114,14 +106,10 @@ class UserControllerTest extends WebTestCase
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
         );
-
-        // RELOAD FIXTURES
     }
 
     public function testAdminEditAction()
     {
-        // LOAD FIXTURES
-
         // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(true);
 
@@ -152,14 +140,10 @@ class UserControllerTest extends WebTestCase
             0,
             $crawler->filter('html:contains("emailHasBeenChanged@example.com")')->count()
         );
-
-        // RELOAD FIXTURES
     }
 
     public function testUserEditAction()
     {
-        // LOAD FIXTURES
-
         // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
         $this->logIn(false);
 
@@ -168,8 +152,6 @@ class UserControllerTest extends WebTestCase
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
         );
-
-        // RELOAD FIXTURES
     }
 
     private function logIn(bool $admin)

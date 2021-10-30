@@ -1,15 +1,16 @@
 <?php
 
-namespace App\DataFixtures\ORM;
+namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Task;
 use AppBundle\Entity\User;
+use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\FixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class AppFixtures implements FixtureInterface, ContainerAwareInterface
+class AppFixtures extends AbstractFixture implements FixtureInterface, ContainerAwareInterface
 {
     private $container;
 
@@ -23,7 +24,6 @@ class AppFixtures implements FixtureInterface, ContainerAwareInterface
             $user->setPassword($password);
             $user->setEmail('user_' . $i . '@example.com');
             $i == 0 ? $user->setRoles(['ROLE_ADMIN']) : $user->setRoles(['ROLE_USER']);
-
             // Create 10 tasks per user
             for ($b = 0; $b < 10; $b++) {
                 $task = new Task();

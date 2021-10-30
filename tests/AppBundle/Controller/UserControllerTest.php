@@ -2,12 +2,10 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\DataFixtures\ORM\AppFixtures;
+use AppBundle\Entity\User;
 
 class UserControllerTest extends WebTestCase
 {
@@ -15,47 +13,64 @@ class UserControllerTest extends WebTestCase
 
     protected function setUp()
     {
-//        // Set up a dummy client for tests
+        parent::setUp();
+        self::bootKernel();
         $this->client = static::createClient();
+        $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
+        $this->userRepo = $this->em->getRepository(User::class);
 
-        // Load clean fixtures for each test
-//        $loader = new Loader();
-//        $loader->loadFromDirectory('src/AppBundle/DataFixtures/ORM');
-//        $purger = new ORMPurger();
-//        $executor = new ORMExecutor($em, $purger);
-//        $executor->execute($loader->getFixtures(), true);
-        $kernel = self::bootKernel();
-        $this->addFixture
+//        $this->loadFixtures([
+//            AppFixtures::class
+//        ]);
+    }
+
+    public function tearDown()
+    {
+//        $this->loadFixtures([
+//            AppFixtures::class
+//        ]);
     }
 
     public function testAdminListAction()
     {
-        // LIST_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(true);
 
         $crawler = $this->client->request('GET', '/users');
+
+        // are access rights ok
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
         );
 
+        // is the html present
         $this->assertGreaterThan(
             0,
             $crawler->filter('table')->count()
         );
 
+        // are the cols present
         $this->assertGreaterThan(
             0,
             $crawler->filter('html:contains("Actions")')->count()
+        );
+
+        // are users present
+        $this->assertEquals(
+            1,
+            $crawler->filter('html:contains("user_0")')->count()
         );
     }
 
     public function testUserListAction()
     {
-        // LIST_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(false);
 
         $this->client->request('GET', '/users');
+
+        // are access rights forbidden
         $this->assertEquals(
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
@@ -64,44 +79,49 @@ class UserControllerTest extends WebTestCase
 
     public function testAdminCreateAction()
     {
-        // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(true);
 
         $crawler = $this->client->request('GET', '/users/create');
+
+        // are access rights ok
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
         );
 
+        // fill the form
         $form = $crawler->selectButton('Ajouter')->form();
-        $form['user[username]'] = $this->username;
-        $form['user[password][first]'] = $this->pasword;
-        $form['user[password][second]'] = $this->password;
-        $form['user[email]'] = $this->email;
-        $form['user[roles]'] = $this->roles;
+        $form['user[username]'] = "user_200";
+        $form['user[password][first]'] = "test1234";
+        $form['user[password][second]'] = "test1234";
+        $form['user[email]'] = "user_200@example.com";
+        $form['user[roles]'] = ["ROLE_USER"];
         $this->client->submit($form);
 
         $crawler = $this->client->followRedirect();
 
-        // Test that there is a page
+        // is listAction html present
         $this->assertGreaterThan(
             0,
             $crawler->filter('table')->count()
         );
 
-        // Test that the username is present in the list
+        // is created user present
         $this->assertGreaterThan(
             0,
-            $crawler->filter('html:contains('.$this->username.')')->count()
+            $crawler->filter('html:contains(user_200)')->count()
         );
     }
 
     public function testUserCreateAction()
     {
-        // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(false);
 
         $this->client->request('GET', '/users/create');
+
+        // are access rights forbidden
         $this->assertEquals(
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
@@ -110,32 +130,37 @@ class UserControllerTest extends WebTestCase
 
     public function testAdminEditAction()
     {
-        // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(true);
 
-        $crawler = $this->client->request('GET', '/users/3/edit');
+        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
+
+        $crawler = $this->client->request('GET', '/users/'.$user->getId().'/edit');
+
+        // are access rights ok
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
         );
 
+        // fill the form
         $form = $crawler->selectButton('Modifier')->form();
         $form['user[username]'] = 'nameHasBeenChanged';
-        $form['user[password][first]'] = $this->password;
-        $form['user[password][second]'] = $this->password;
+        $form['user[password][first]'] = $user->getPassword();
+        $form['user[password][second]'] = $user->getPassword();
         $form['user[email]'] = 'emailHasBeenChanged@example.com';
-        $form['user[roles]'] = $this->roles;
+        $form['user[roles]'] = $user->getRoles();
         $this->client->submit($form);
 
         $crawler = $this->client->followRedirect();
 
-        // Test that the new username is present in the list
+        // is changed username present
         $this->assertGreaterThan(
             0,
             $crawler->filter('html:contains("nameHasBeenChanged")')->count()
         );
 
-        // Test that the new email is present in the list
+        // is changed email present
         $this->assertGreaterThan(
             0,
             $crawler->filter('html:contains("emailHasBeenChanged@example.com")')->count()
@@ -144,10 +169,14 @@ class UserControllerTest extends WebTestCase
 
     public function testUserEditAction()
     {
-        // CREATE_ACTION IS ONLY ACCESSIBLE BY ADMIN
+        // log into the app
         $this->logIn(false);
 
-        $crawler = $this->client->request('GET', '/users/3/edit');
+        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
+
+        $this->client->request('GET', '/users/'.$user->getId().'/edit');
+
+        // are access rights forbidden
         $this->assertEquals(
             Response::HTTP_FORBIDDEN,
             $this->client->getResponse()->getStatusCode()
@@ -156,10 +185,15 @@ class UserControllerTest extends WebTestCase
 
     private function logIn(bool $admin)
     {
-        // USER 1 IS ADMIN, REST IS USER, PASSWORD IS ALWAYS THE SAME
+        // user_0 is always admin in DataFixtures
+        if ($admin){
+            $user = "user_0";
+        } else {
+            $user = "user_1";
+        }
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = $admin = true ? 'user_1' : 'user_2';
+        $form['_username'] = $user;
         $form['_password'] = 'test1234';
         $this->client->submit($form);
     }

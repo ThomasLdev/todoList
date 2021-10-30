@@ -3,13 +3,21 @@ language: php
 php:
   - '7.1'
 
+services:
+  - mysql
+
+test:
+  adapter: mysql2
+  database: todolist_test
+  username: travis
+  encoding: utf8
+
 script:
   - composer install
   - vendor/bin/phpunit
 
-after_success:
-  - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'
-#  - sbt clean coverage test
+before_install:
+  - mysql -e 'CREATE DATABASE todolist_test;'
 
-#after_success:
-#  - sbt coveralls
+after_success:
+#  - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'

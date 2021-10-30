@@ -9,9 +9,21 @@ class SecurityControllerTest extends WebTestCase
 {
     private $client = null;
 
-    public function setUp()
+    protected function setUp()
     {
+        parent::setUp();
+        self::bootKernel();
         $this->client = static::createClient();
+//        $this->loadFixtures([
+//            AppFixtures::class
+//        ]);
+    }
+
+    public function tearDown()
+    {
+//        $this->loadFixtures([
+//            AppFixtures::class
+//        ]);
     }
 
     public function testLoginAction()

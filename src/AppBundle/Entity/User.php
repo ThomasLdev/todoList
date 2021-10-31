@@ -44,6 +44,21 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
+     */
+    private $tasks;
+
+    public function getTasks()
+    {
+        return $this->tasks;
+    }
+
+    public function setTasks($tasks): void
+    {
+        $this->tasks = $tasks;
+    }
+
     public function setId(int $id)
     {
         $this->id = $id;

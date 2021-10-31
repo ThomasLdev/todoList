@@ -178,15 +178,9 @@ class UserControllerTest extends WebTestCase
 
     private function logIn(bool $admin)
     {
-        // user_0 is always admin in DataFixtures
-        if ($admin){
-            $user = "user_0";
-        } else {
-            $user = "user_1";
-        }
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = $user;
+        $form['_username'] = ($admin) ? "user_0" : "user_1";
         $form['_password'] = 'test1234';
         $this->client->submit($form);
     }

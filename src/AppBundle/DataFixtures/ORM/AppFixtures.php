@@ -14,6 +14,10 @@ class AppFixtures extends AbstractFixture implements FixtureInterface, Container
 {
     private $container;
 
+    /**
+     * @param ObjectManager $manager
+     * @codeCoverageIgnore
+     */
     public function load(ObjectManager $manager)
     {
         // Create 5 users

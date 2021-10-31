@@ -47,25 +47,25 @@ class TaskControllerTest extends WebTestCase
     // Rajouter un test emptyTask
     // Rajouter les tests de relation task/user une fois implémenté
 
-//    public function testUserCreateAction()
-//    {
-//        $this->logIn(false);
-//
-//        $crawler = $this->client->request('GET', '/tasks/create');
-//        $this->assertEquals(
-//            Response::HTTP_OK,
-//            $this->client->getResponse()->getStatusCode()
-//        );
-//
-//        $this->fillTaskForm($crawler, 'Ajouter');
-//
-//        $crawler = $this->client->followRedirect();
-//
-//        $this->assertGreaterThan(
-//            0,
-//            $crawler->filter('html:contains('.$this->taskName.')')->count()
-//        );
-//    }
+    public function testUserCreateAction()
+    {
+        $this->logIn(false);
+
+        $crawler = $this->client->request('GET', '/tasks/create');
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
+
+        $this->fillTaskForm($crawler, 'Ajouter');
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains('.$this->taskName.')')->count()
+        );
+    }
 
     public function testUserEditAction()
     {
@@ -153,7 +153,7 @@ class TaskControllerTest extends WebTestCase
     private function fillTaskForm($crawler, String $formBtn)
     {
         $form = $crawler->selectButton($formBtn)->form();
-        $form['task[title]'] = 'TestTask'.uniqid();
+        $form['task[title]'] = $this->taskName;
         $form['task[content]'] = "Lorem Ipsum";
         $this->client->submit($form);
     }

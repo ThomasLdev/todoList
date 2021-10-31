@@ -2,9 +2,9 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\DataFixtures\ORM\AppFixtures;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use AppBundle\Entity\User;
 
 class UserControllerTest extends WebTestCase
@@ -19,16 +19,9 @@ class UserControllerTest extends WebTestCase
         $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
         $this->userRepo = $this->em->getRepository(User::class);
 
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
-    }
-
-    public function tearDown()
-    {
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
     }
 
     public function testAdminListAction()

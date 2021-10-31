@@ -2,7 +2,7 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\DataFixtures\ORM\AppFixtures;
 use AppBundle\Entity\User;
@@ -16,16 +16,9 @@ class DefaultControllerTest extends WebTestCase
         parent::setUp();
         self::bootKernel();
         $this->client = static::createClient();
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
-    }
-
-    public function tearDown()
-    {
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
     }
 
     public function testGuestIndexAction()

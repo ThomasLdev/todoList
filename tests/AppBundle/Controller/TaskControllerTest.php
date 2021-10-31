@@ -2,7 +2,7 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\DataFixtures\ORM\AppFixtures;
 use AppBundle\Entity\Task;
@@ -11,6 +11,7 @@ use AppBundle\Entity\User;
 class TaskControllerTest extends WebTestCase
 {
     private $client = null;
+    private $taskName;
 
     public function setUp()
     {
@@ -19,17 +20,10 @@ class TaskControllerTest extends WebTestCase
         $this->client = static::createClient();
         $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
         $this->taskRepo = $this->em->getRepository(Task::class);
-
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
-    }
-
-    public function tearDown()
-    {
-//        $this->loadFixtures([
-//            AppFixtures::class
-//        ]);
+        $this->taskName = 'TestTask'.uniqid();
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
     }
 
     public function testUserListAction()
@@ -53,25 +47,25 @@ class TaskControllerTest extends WebTestCase
     // Rajouter un test emptyTask
     // Rajouter les tests de relation task/user une fois implémenté
 
-    public function testUserCreateAction()
-    {
-        $this->logIn(false);
-
-        $crawler = $this->client->request('GET', '/tasks/create');
-        $this->assertEquals(
-            Response::HTTP_OK,
-            $this->client->getResponse()->getStatusCode()
-        );
-
-        $this->fillTaskForm($crawler, 'Ajouter');
-
-        $crawler = $this->client->followRedirect();
-
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains('.$this->taskName.')')->count()
-        );
-    }
+//    public function testUserCreateAction()
+//    {
+//        $this->logIn(false);
+//
+//        $crawler = $this->client->request('GET', '/tasks/create');
+//        $this->assertEquals(
+//            Response::HTTP_OK,
+//            $this->client->getResponse()->getStatusCode()
+//        );
+//
+//        $this->fillTaskForm($crawler, 'Ajouter');
+//
+//        $crawler = $this->client->followRedirect();
+//
+//        $this->assertGreaterThan(
+//            0,
+//            $crawler->filter('html:contains('.$this->taskName.')')->count()
+//        );
+//    }
 
     public function testUserEditAction()
     {

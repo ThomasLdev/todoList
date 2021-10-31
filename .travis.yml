@@ -19,5 +19,5 @@ script:
 before_install:
   - mysql -e 'CREATE DATABASE todolist_test;'
 
-after_success:
+#after_success:
 #  - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'

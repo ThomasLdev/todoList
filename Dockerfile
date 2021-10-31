@@ -1,4 +1,4 @@
-FROM phpstorm/php-56-apache-xdebug-25
+FROM phpstorm/php-71-apache-xdebug-25
 
 RUN apt-get update && apt-get install -y libzip-dev zip \
     && docker-php-ext-install zip pdo_mysql pdo exif
@@ -18,8 +18,5 @@ RUN chown www-data:www-data /var/www/html/
 RUN groupadd dev -g 1000
 RUN useradd dev -g dev -d /home/dev -m
 RUN echo '%dev ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-#RUN curl -sS https://get.symfony.com/cli/installer | bash
-#RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
 USER dev:dev

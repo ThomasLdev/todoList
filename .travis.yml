@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - '7.1'
+
+script:
+  - composer install
+  - vendor/bin/phpunit
+
+after_success:
+  - sh -c 'if [ &quot;$TRAVIS_PHP_VERSION&quot; != &quot;hhvm&quot; ]; then php vendor/bin/coveralls -v; fi;'
+#  - sbt clean coverage test
+
+#after_success:
+#  - sbt coveralls

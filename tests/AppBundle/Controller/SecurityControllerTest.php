@@ -4,9 +4,8 @@ namespace Tests\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use AppBundle\Entity\User;
 
-class DefaultControllerTest extends WebTestCase
+class SecurityControllerTest extends WebTestCase
 {
     private $client = null;
 
@@ -15,25 +14,24 @@ class DefaultControllerTest extends WebTestCase
         $this->client = static::createClient();
     }
 
-    public function testIndexAction()
+    public function testLoginAction()
     {
-        // TEST 1 : Log in with test user
-        $this->logIn();
-
-        // TEST 2 : Get homepage = 200
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/login');
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
         );
-    }
 
-    private function logIn()
-    {
-        $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
         $form['_username'] = 'user_1';
         $form['_password'] = 'test1234';
         $this->client->submit($form);
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Bienvenue sur Todo List")')->count()
+        );
     }
 }

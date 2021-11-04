@@ -59,12 +59,17 @@ class User implements UserInterface
 
     /**
      * @return Collection|Task[]
+     * @codeCoverageIgnore
      */
     public function getTasks(): Collection
     {
         return $this->tasks;
     }
 
+    /**
+     * @param $tasks
+     * @codeCoverageIgnore
+     */
     public function setTasks($tasks)
     {
         $this->tasks = $tasks;

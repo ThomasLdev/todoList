@@ -60,8 +60,6 @@ class TaskController extends Controller
             if ($task->getUser() == $this->getUser()) {
                 $this->getDoctrine()->getManager()->flush();
                 $this->addFlash('success', 'La tâche a bien été modifiée.');
-            } else {
-                $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
             }
             return $this->redirectToRoute('task_list');
         }
@@ -81,7 +79,7 @@ class TaskController extends Controller
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
         } else {
-            $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
+            throw $this->createAccessDeniedException();
         }
         return $this->redirectToRoute('task_list');
     }
@@ -97,7 +95,7 @@ class TaskController extends Controller
             $em->flush();
             $this->addFlash('success', 'La tâche a bien été supprimée.');
         } else {
-            $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
+            throw $this->createAccessDeniedException();
         }
         return $this->redirectToRoute('task_list');
     }

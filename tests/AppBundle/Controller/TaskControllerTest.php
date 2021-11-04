@@ -20,6 +20,7 @@ class TaskControllerTest extends WebTestCase
         $this->client = static::createClient();
         $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
         $this->taskRepo = $this->em->getRepository(Task::class);
+        $this->userRepo = $this->em->getRepository(User::class);
         $this->taskName = 'TestTask'.uniqid();
         $this->loadFixtures([
             AppFixtures::class
@@ -44,8 +45,7 @@ class TaskControllerTest extends WebTestCase
     }
 
     // Rajouter les tests admins qui voient les tasks du user anonyme
-    // Rajouter un test emptyTask
-    // Rajouter les tests de relation task/user une fois implémenté
+    // Rajouter un test emptyTask ?
 
     public function testUserCreateAction()
     {
@@ -71,16 +71,11 @@ class TaskControllerTest extends WebTestCase
     {
         $this->logIn(false);
 
-        // TODO : activate when user:task relation is up
+        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
 
-//        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
-//
-//        $task = $this->taskRepo->findOneBy([
-//            "user_id" => $user->getId()
-//        ]);
-//        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
-
-        $task = $this->taskRepo->findAll()[0];
+        $task = $this->taskRepo->findOneBy([
+            "user" => $user
+        ]);
 
         $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
 
@@ -95,7 +90,26 @@ class TaskControllerTest extends WebTestCase
 
         $this->assertGreaterThan(
             0,
-            $crawler->filter('html:contains('.$task->getTitle().')')->count()
+            $crawler->filter('html:contains('.$this->taskName.')')->count()
+        );
+    }
+
+    public function testUserFailEditAction()
+    {
+        $this->logIn(false);
+
+        // get another user than the task author
+        $user = $this->userRepo->findOneBy(["username" => "user_2"]);
+
+        $task = $this->taskRepo->findOneBy([
+            "user" => $user
+        ]);
+
+        $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
+
+        $this->assertEquals(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
         );
     }
 
@@ -117,6 +131,25 @@ class TaskControllerTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
     }
 
+    public function testUserFailToggleTaskAction()
+    {
+        $this->logIn(false);
+
+        // get another user than the task author
+        $user = $this->userRepo->findOneBy(["username" => "user_2"]);
+
+        $task = $this->taskRepo->findOneBy([
+            "user" => $user
+        ]);
+
+        $this->client->request('GET', '/tasks/'.$task->getId().'/toggle');
+
+        $this->assertEquals(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
+    }
+
     public function testDeleteTaskAction()
     {
         $this->logIn(false);
@@ -135,17 +168,29 @@ class TaskControllerTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
     }
 
+    public function testUserFailDeleteTaskAction()
+    {
+        $this->logIn(false);
+
+        $user = $this->userRepo->findOneBy(["username" => "user_2"]);
+
+        $task = $this->taskRepo->findOneBy([
+            "user" => $user
+        ]);
+
+        $this->client->request('GET', '/tasks/'.$task->getId().'/delete');
+
+        $this->assertEquals(
+            Response::HTTP_FORBIDDEN,
+            $this->client->getResponse()->getStatusCode()
+        );
+    }
+
     private function logIn(bool $admin)
     {
-        // user_0 is always admin in DataFixtures
-        if ($admin){
-            $user = "user_0";
-        } else {
-            $user = "user_1";
-        }
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = $user;
+        $form['_username'] = ($admin) ? "user_0" : "user_1";
         $form['_password'] = 'test1234';
         $this->client->submit($form);
     }

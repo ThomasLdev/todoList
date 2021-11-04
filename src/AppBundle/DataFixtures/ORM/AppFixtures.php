@@ -20,7 +20,7 @@ class AppFixtures extends AbstractFixture implements FixtureInterface, Container
      */
     public function load(ObjectManager $manager)
     {
-        // Create 5 users
+        // Create 4 regular users and 1 admin
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
             $user->setUsername('user_' . $i);
@@ -35,8 +35,7 @@ class AppFixtures extends AbstractFixture implements FixtureInterface, Container
                 $task->setContent('test content' . $b);
                 // 1 task on 2 is done
                 $b % 2 == 1 ? $task->toggle(true) : $task->toggle(false);
-//                TODO :
-//                $task->setUser($user);
+                $task->setUser($user);
                 $manager->persist($task);
             }
             $manager->persist($user);

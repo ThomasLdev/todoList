@@ -15,9 +15,13 @@ class TaskController extends Controller
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy([
-            'user' => $this->getUser()
-        ])]);
+        if (in_array("ROLE_ADMIN", $this->getUser()->getRoles())) {
+            $tasks = $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['user' => null]);
+        } else {
+            $tasks = $this->getDoctrine()->getRepository('AppBundle:Task')->findBy(['user' => $this->getUser()]);
+        }
+
+        return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
 
     /**

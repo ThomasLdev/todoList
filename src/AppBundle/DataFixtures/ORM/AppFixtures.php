@@ -35,10 +35,18 @@ class AppFixtures extends AbstractFixture implements FixtureInterface, Container
                 $task->setContent('test content' . $b);
                 // 1 task on 2 is done
                 $b % 2 == 1 ? $task->toggle(true) : $task->toggle(false);
-                $task->setUser($user);
+                $i == 0 ? : $task->setUser($user);
                 $manager->persist($task);
             }
             $manager->persist($user);
+        }
+        for ($c = 0; $c < 5; $c++) {
+            $task = new Task();
+            $task->setTitle('task' . $c);
+            $task->setContent('test content' . $c);
+            // 1 task on 2 is done
+            $c % 2 == 1 ? $task->toggle(true) : $task->toggle(false);
+            $manager->persist($task);
         }
         $manager->flush();
     }

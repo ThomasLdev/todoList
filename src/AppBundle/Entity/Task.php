@@ -59,6 +59,7 @@ class Task
     {
         $this->createdAt = new \Datetime();
         $this->isDone = false;
+        $this->user = null;
     }
 
     public function getId()

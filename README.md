@@ -2,7 +2,6 @@ ToDoList
 ========
 
 [![Coverage Status](https://coveralls.io/repos/github/ThomasLdev/todoList/badge.svg)](https://coveralls.io/github/ThomasLdev/todoList)
-[![Build Status](https://app.travis-ci.com/ThomasLdev/todoList.svg?branch=main)](https://app.travis-ci.com/ThomasLdev/todoList)
 
 Base du projet #8 : Améliorez un projet existant
 

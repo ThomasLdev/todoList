@@ -2,7 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity\Task;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -49,12 +52,20 @@ class User implements UserInterface
      */
     private $tasks;
 
-    public function getTasks()
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
     {
         return $this->tasks;
     }
 
-    public function setTasks($tasks): void
+    public function setTasks($tasks)
     {
         $this->tasks = $tasks;
     }

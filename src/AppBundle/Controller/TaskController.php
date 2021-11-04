@@ -15,7 +15,9 @@ class TaskController extends Controller
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findAll()]);
+        return $this->render('task/list.html.twig', ['tasks' => $this->getDoctrine()->getRepository('AppBundle:Task')->findBy([
+            'user' => $this->getUser()
+        ])]);
     }
 
     /**
@@ -30,7 +32,7 @@ class TaskController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
+            $task->setUser($this->getUser());
             $em->persist($task);
             $em->flush();
 
@@ -47,18 +49,22 @@ class TaskController extends Controller
      */
     public function editAction(Task $task, Request $request)
     {
+        if ($task->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
-
+            if ($task->getUser() == $this->getUser()) {
+                $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', 'La tâche a bien été modifiée.');
+            } else {
+                $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
+            }
             return $this->redirectToRoute('task_list');
         }
-
         return $this->render('task/edit.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
@@ -70,11 +76,13 @@ class TaskController extends Controller
      */
     public function toggleTaskAction(Task $task)
     {
-        $task->toggle(!$task->isDone());
-        $this->getDoctrine()->getManager()->flush();
-
-        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
-
+        if ($task->getUser() == $this->getUser()) {
+            $task->toggle(!$task->isDone());
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        } else {
+            $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
+        }
         return $this->redirectToRoute('task_list');
     }
 
@@ -83,12 +91,14 @@ class TaskController extends Controller
      */
     public function deleteTaskAction(Task $task)
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($task);
-        $em->flush();
-
-        $this->addFlash('success', 'La tâche a bien été supprimée.');
-
+        if ($task->getUser() == $this->getUser()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($task);
+            $em->flush();
+            $this->addFlash('success', 'La tâche a bien été supprimée.');
+        } else {
+            $this->addFlash('error', 'Vous ne possedez pas cette tâche.');
+        }
         return $this->redirectToRoute('task_list');
     }
 }

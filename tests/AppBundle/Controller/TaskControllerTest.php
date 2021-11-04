@@ -20,6 +20,7 @@ class TaskControllerTest extends WebTestCase
         $this->client = static::createClient();
         $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
         $this->taskRepo = $this->em->getRepository(Task::class);
+        $this->userRepo = $this->em->getRepository(User::class);
         $this->taskName = 'TestTask'.uniqid();
         $this->loadFixtures([
             AppFixtures::class
@@ -44,7 +45,7 @@ class TaskControllerTest extends WebTestCase
     }
 
     // Rajouter les tests admins qui voient les tasks du user anonyme
-    // Rajouter un test emptyTask
+    // Rajouter un test emptyTask ?
     // Rajouter les tests de relation task/user une fois implémenté
 
     public function testUserCreateAction()
@@ -71,16 +72,11 @@ class TaskControllerTest extends WebTestCase
     {
         $this->logIn(false);
 
-        // TODO : activate when user:task relation is up
+        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
 
-//        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
-//
-//        $task = $this->taskRepo->findOneBy([
-//            "user_id" => $user->getId()
-//        ]);
-//        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
-
-        $task = $this->taskRepo->findAll()[0];
+        $task = $this->taskRepo->findOneBy([
+            "user" => $user
+        ]);
 
         $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
 
@@ -95,7 +91,7 @@ class TaskControllerTest extends WebTestCase
 
         $this->assertGreaterThan(
             0,
-            $crawler->filter('html:contains('.$task->getTitle().')')->count()
+            $crawler->filter('html:contains('.$this->taskName.')')->count()
         );
     }
 

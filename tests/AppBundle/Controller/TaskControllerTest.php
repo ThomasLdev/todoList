@@ -44,8 +44,22 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    // Rajouter les tests admins qui voient les tasks du user anonyme
-    // Rajouter un test emptyTask ?
+    public function testAdminListAction()
+    {
+        $this->logIn(true);
+
+        $crawler = $this->client->request('GET', '/tasks');
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
+
+        // col-md-12 = task row, so verify if any task exists
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('.row .col-md-12')->count()
+        );
+    }
 
     public function testUserCreateAction()
     {

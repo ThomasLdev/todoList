@@ -2,26 +2,47 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\DataFixtures\ORM\AppFixtures;
 use AppBundle\Entity\User;
 
 class DefaultControllerTest extends WebTestCase
 {
     private $client = null;
 
-    public function setUp()
+    protected function setUp()
     {
+        parent::setUp();
+        self::bootKernel();
         $this->client = static::createClient();
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
+    }
+
+    public function testGuestIndexAction()
+    {
+        $this->client->request('GET', '/');
+
+        $this->assertEquals(
+            Response::HTTP_FOUND,
+            $this->client->getResponse()->getStatusCode()
+        );
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('form')->count()
+        );
     }
 
     public function testIndexAction()
     {
-        // TEST 1 : Log in with test user
         $this->logIn();
 
-        // TEST 2 : Get homepage = 200
-        $crawler = $this->client->request('GET', '/');
+        $this->client->request('GET', '/');
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()

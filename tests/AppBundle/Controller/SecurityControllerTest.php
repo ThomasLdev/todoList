@@ -2,16 +2,22 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+use AppBundle\DataFixtures\ORM\AppFixtures;
 use Symfony\Component\HttpFoundation\Response;
 
 class SecurityControllerTest extends WebTestCase
 {
     private $client = null;
 
-    public function setUp()
+    protected function setUp()
     {
+        parent::setUp();
+        self::bootKernel();
         $this->client = static::createClient();
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
     }
 
     public function testLoginAction()

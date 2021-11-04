@@ -16,4 +16,14 @@ class UserTest extends TestCase
 
         $this->assertSame('Roger', $result);
     }
+
+    public function testSetId()
+    {
+        $user = new User();
+        $user->setId(1);
+
+        $result =  $user->getId();
+
+        $this->assertSame(1, $result);
+    }
 }

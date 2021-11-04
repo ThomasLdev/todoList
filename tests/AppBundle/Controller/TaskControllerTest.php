@@ -2,25 +2,33 @@
 
 namespace Tests\AppBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\DataFixtures\ORM\AppFixtures;
+use AppBundle\Entity\Task;
+use AppBundle\Entity\User;
 
 class TaskControllerTest extends WebTestCase
 {
     private $client = null;
     private $taskName;
-    private $taskContent;
 
     public function setUp()
     {
+        parent::setUp();
+        self::bootKernel();
         $this->client = static::createClient();
+        $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
+        $this->taskRepo = $this->em->getRepository(Task::class);
         $this->taskName = 'TestTask'.uniqid();
-        $this->taskContent = 'Lorem ipsum.';
+        $this->loadFixtures([
+            AppFixtures::class
+        ]);
     }
 
-    public function testListAction()
+    public function testUserListAction()
     {
-        $this->logIn();
+        $this->logIn(false);
 
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertEquals(
@@ -35,11 +43,13 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
+    // Rajouter les tests admins qui voient les tasks du user anonyme
     // Rajouter un test emptyTask
+    // Rajouter les tests de relation task/user une fois implémenté
 
-    public function testCreateAction()
+    public function testUserCreateAction()
     {
-        $this->logIn();
+        $this->logIn(false);
 
         $crawler = $this->client->request('GET', '/tasks/create');
         $this->assertEquals(
@@ -57,11 +67,23 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    public function testEditAction()
+    public function testUserEditAction()
     {
-        $this->logIn();
+        $this->logIn(false);
 
-        $crawler = $this->client->request('GET', '/tasks/10/edit');
+        // TODO : activate when user:task relation is up
+
+//        $user = $this->userRepo->findOneBy(["username" => "user_1"]);
+//
+//        $task = $this->taskRepo->findOneBy([
+//            "user_id" => $user->getId()
+//        ]);
+//        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
+
+        $task = $this->taskRepo->findAll()[0];
+
+        $crawler = $this->client->request('GET', '/tasks/'.$task->getId().'/edit');
+
         $this->assertEquals(
             Response::HTTP_OK,
             $this->client->getResponse()->getStatusCode()
@@ -73,13 +95,13 @@ class TaskControllerTest extends WebTestCase
 
         $this->assertGreaterThan(
             0,
-            $crawler->filter('html:contains('.$this->taskName.')')->count()
+            $crawler->filter('html:contains('.$task->getTitle().')')->count()
         );
     }
 
     public function testToggleTaskAction()
     {
-        $this->logIn();
+        $this->logIn(false);
 
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertEquals(
@@ -97,7 +119,7 @@ class TaskControllerTest extends WebTestCase
 
     public function testDeleteTaskAction()
     {
-        $this->logIn();
+        $this->logIn(false);
 
         $crawler = $this->client->request('GET', '/tasks');
         $this->assertEquals(
@@ -113,11 +135,17 @@ class TaskControllerTest extends WebTestCase
         $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
     }
 
-    private function logIn()
+    private function logIn(bool $admin)
     {
+        // user_0 is always admin in DataFixtures
+        if ($admin){
+            $user = "user_0";
+        } else {
+            $user = "user_1";
+        }
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('Se connecter')->form();
-        $form['_username'] = 'user_1';
+        $form['_username'] = $user;
         $form['_password'] = 'test1234';
         $this->client->submit($form);
     }
@@ -126,7 +154,7 @@ class TaskControllerTest extends WebTestCase
     {
         $form = $crawler->selectButton($formBtn)->form();
         $form['task[title]'] = $this->taskName;
-        $form['task[content]'] = $this->taskContent;
+        $form['task[content]'] = "Lorem Ipsum";
         $this->client->submit($form);
     }
 }

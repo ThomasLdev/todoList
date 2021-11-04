@@ -2,14 +2,14 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for /var/www/html/src/AppBundle</title>
+  <title>Dashboard for /var/www/html/src/AppBundle/DataFixtures/ORM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/nv.d3.min.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
+  <link href="../../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../css/nv.d3.min.css" rel="stylesheet">
+  <link href="../../css/style.css" rel="stylesheet">
   <!--[if lt IE 9]>
-  <script src="js/html5shiv.min.js"></script>
-  <script src="js/respond.min.js"></script>
+  <script src="../../js/html5shiv.min.js"></script>
+  <script src="../../js/respond.min.js"></script>
   <![endif]-->
  </head>
  <body>
@@ -18,7 +18,9 @@
     <div class="row">
      <div class="col-md-12">
       <ol class="breadcrumb">
-        <li><a href="index.html">/var/www/html/src/AppBundle</a></li>
+        <li><a href="../../index.html">/var/www/html/src/AppBundle</a></li>
+        <li><a href="../index.html">DataFixtures</a></li>
+        <li><a href="index.html">ORM</a></li>
         <li class="active">(Dashboard)</li>
 
       </ol>
@@ -140,11 +142,11 @@
     </p>
    </footer>
   </div>
-  <script src="js/jquery.min.js" type="text/javascript"></script>
-  <script src="js/bootstrap.min.js" type="text/javascript"></script>
-  <script src="js/holder.min.js" type="text/javascript"></script>
-  <script src="js/d3.min.js" type="text/javascript"></script>
-  <script src="js/nv.d3.min.js" type="text/javascript"></script>
+  <script src="../../js/jquery.min.js" type="text/javascript"></script>
+  <script src="../../js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../js/holder.min.js" type="text/javascript"></script>
+  <script src="../../js/d3.min.js" type="text/javascript"></script>
+  <script src="../../js/nv.d3.min.js" type="text/javascript"></script>
   <script type="text/javascript">
 $(document).ready(function() {
   nv.addGraph(function() {
@@ -157,7 +159,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,10], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -175,7 +177,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#methodCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,38], "Method Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,2], "Method Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -225,7 +227,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([[100,0,"<a href=\"AppBundle.php.html#7\">AppBundle<\/a>"],[100,1,"<a href=\"Controller\/DefaultController.php.html#8\">DefaultController<\/a>"],[100,3,"<a href=\"Controller\/SecurityController.php.html#9\">SecurityController<\/a>"],[100,7,"<a href=\"Controller\/TaskController.php.html#11\">TaskController<\/a>"],[100,5,"<a href=\"Controller\/UserController.php.html#12\">UserController<\/a>"],[100,6,"<a href=\"DataFixtures\/ORM\/AppFixtures.php.html#13\">AppFixtures<\/a>"],[100,10,"<a href=\"Entity\/Task.php.html#12\">Task<\/a>"],[100,13,"<a href=\"Entity\/User.php.html#15\">User<\/a>"],[100,1,"<a href=\"Form\/TaskType.php.html#9\">TaskType<\/a>"],[100,1,"<a href=\"Form\/UserType.php.html#14\">UserType<\/a>"]], 'Class Complexity'))
+      .datum(getComplexityData([[100,6,"<a href=\"AppFixtures.php.html#13\">AppFixtures<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);
@@ -249,7 +251,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Method Complexity');
 
     d3.select('#methodComplexity svg')
-      .datum(getComplexityData([[100,1,"<a href=\"Controller\/DefaultController.php.html#13\">DefaultController::indexAction<\/a>"],[100,1,"<a href=\"Controller\/SecurityController.php.html#14\">SecurityController::loginAction<\/a>"],[100,1,"<a href=\"Controller\/SecurityController.php.html#31\">SecurityController::loginCheck<\/a>"],[100,1,"<a href=\"Controller\/SecurityController.php.html#40\">SecurityController::logoutCheck<\/a>"],[100,1,"<a href=\"Controller\/TaskController.php.html#16\">TaskController::listAction<\/a>"],[100,2,"<a href=\"Controller\/TaskController.php.html#24\">TaskController::createAction<\/a>"],[100,2,"<a href=\"Controller\/TaskController.php.html#48\">TaskController::editAction<\/a>"],[100,1,"<a href=\"Controller\/TaskController.php.html#71\">TaskController::toggleTaskAction<\/a>"],[100,1,"<a href=\"Controller\/TaskController.php.html#84\">TaskController::deleteTaskAction<\/a>"],[100,1,"<a href=\"Controller\/UserController.php.html#18\">UserController::listAction<\/a>"],[100,2,"<a href=\"Controller\/UserController.php.html#27\">UserController::createAction<\/a>"],[100,2,"<a href=\"Controller\/UserController.php.html#54\">UserController::editAction<\/a>"],[100,5,"<a href=\"DataFixtures\/ORM\/AppFixtures.php.html#21\">AppFixtures::load<\/a>"],[100,1,"<a href=\"DataFixtures\/ORM\/AppFixtures.php.html#47\">AppFixtures::setContainer<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#43\">Task::__construct<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#49\">Task::getId<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#54\">Task::getCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#59\">Task::setCreatedAt<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#64\">Task::getTitle<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#69\">Task::setTitle<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#74\">Task::getContent<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#79\">Task::setContent<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#84\">Task::isDone<\/a>"],[100,1,"<a href=\"Entity\/Task.php.html#89\">Task::toggle<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#47\">User::setId<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#52\">User::getId<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#57\">User::getUsername<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#62\">User::setUsername<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#67\">User::getSalt<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#72\">User::getPassword<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#77\">User::setPassword<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#82\">User::getEmail<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#87\">User::setEmail<\/a>"],[100,2,"<a href=\"Entity\/User.php.html#92\">User::getRoles<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#102\">User::setRoles<\/a>"],[100,1,"<a href=\"Entity\/User.php.html#107\">User::eraseCredentials<\/a>"],[100,1,"<a href=\"Form\/TaskType.php.html#11\">TaskType::buildForm<\/a>"],[100,1,"<a href=\"Form\/UserType.php.html#16\">UserType::buildForm<\/a>"]], 'Method Complexity'))
+      .datum(getComplexityData([[100,5,"<a href=\"AppFixtures.php.html#21\">AppFixtures::load<\/a>"],[100,1,"<a href=\"AppFixtures.php.html#47\">AppFixtures::setContainer<\/a>"]], 'Method Complexity'))
       .transition()
       .duration(500)
       .call(chart);

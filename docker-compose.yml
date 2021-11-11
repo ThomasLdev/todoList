@@ -27,6 +27,7 @@ services:
 
   blackfire:
     image: blackfire/blackfire:2
+    container_name: bf_todolist
     ports: [ "8307" ]
     environment:
       BLACKFIRE_SERVER_ID: c76c0c4c-6188-4f31-83b3-c24ae887f9ba

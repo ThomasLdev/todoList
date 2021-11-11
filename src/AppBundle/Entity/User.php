@@ -47,33 +47,33 @@ class User implements UserInterface
      */
     private $roles = [];
 
-    /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
-     */
-    private $tasks;
+//    /**
+//     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Task", mappedBy="user")
+//     */
+//    private $tasks;
 
-    public function __construct()
-    {
-        $this->tasks = new ArrayCollection();
-    }
+//    public function __construct()
+//    {
+//        $this->tasks = new ArrayCollection();
+//    }
 
-    /**
-     * @return Collection|Task[]
-     * @codeCoverageIgnore
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    /**
-     * @param $tasks
-     * @codeCoverageIgnore
-     */
-    public function setTasks($tasks)
-    {
-        $this->tasks = $tasks;
-    }
+//    /**
+//     * @return Collection|Task[]
+//     * @codeCoverageIgnore
+//     */
+//    public function getTasks(): Collection
+//    {
+//        return $this->tasks;
+//    }
+//
+//    /**
+//     * @param $tasks
+//     * @codeCoverageIgnore
+//     */
+//    public function setTasks($tasks)
+//    {
+//        $this->tasks = $tasks;
+//    }
 
     public function setId(int $id)
     {

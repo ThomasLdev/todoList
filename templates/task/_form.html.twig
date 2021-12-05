@@ -1,0 +1,14 @@
+{{ form_start(form, {'action' : path('task_create')}) }}
+<div class="row">
+    <div class="col-12">
+        {{ form_widget(form) }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <button type="submit" class="btn btn-success">Valider</button>
+        <a class="btn btn-warning" href="{{ path('task_list') }}">Retour</a>
+    </div>
+</div>
+
+{{ form_end(form) }}

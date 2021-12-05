@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+
+  database:
+    image: mysql:5.7
+    container_name: db_todolist_2
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data-todolist_2:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      - dev
+
+  php:
+    build: .
+    container_name: php_todolist_2
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www/html
+      - ./php/host:/etc/apache2/sites-enabled
+    networks:
+      - dev
+
+  blackfire:
+    image: blackfire/blackfire:2
+    container_name: bf_todolist_2
+    ports: [ "8307" ]
+    environment:
+      BLACKFIRE_SERVER_ID: c76c0c4c-6188-4f31-83b3-c24ae887f9ba
+      BLACKFIRE_SERVER_TOKEN: 6e63774bda94b08c071dcec9ebde412277cd598a633ac3c498cf50dcc00b1403
+      BLACKFIRE_CLIENT_ID: e80ff5a3-ac20-41cc-8db2-6adf836de32f
+      BLACKFIRE_CLIENT_TOKEN: 19c6e3dcc00d71f31de031cc999441743c7679bbe739eb2fc6c5c0d5ccb46114
+    networks:
+      - dev
+
+networks:
+  dev:
+
+volumes:
+  db-data-todolist_2:

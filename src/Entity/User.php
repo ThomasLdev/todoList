@@ -120,10 +120,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
+        // TODO: Implement eraseCredentials() method.
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): Void
     {
         // TODO: Implement eraseCredentials() method.
     }

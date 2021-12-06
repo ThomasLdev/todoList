@@ -6,12 +6,14 @@ use App\Entity\Task;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
  * @codeCoverageIgnore
  */
-class AppFixtures extends Fixture
+class AppFixtures extends Fixture implements ContainerAwareInterface
 {
     private UserPasswordHasherInterface $hasher;
 
@@ -26,7 +28,7 @@ class AppFixtures extends Fixture
         for ($i = 0; $i < 5; $i++) {
             $user = new User();
             $user->setUsername('user_' . $i);
-            $password = $this->hasher->hashPassword($user, "test1234");
+            $password = $this->hasher->hashPassword($user, 'test1234');
             $user->setPassword($password);
             $user->setEmail('user_' . $i . '@example.com');
             $i == 0 ? $user->setRoles(['ROLE_ADMIN']) : $user->setRoles(['ROLE_USER']);
@@ -43,5 +45,10 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
         $manager->flush();
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 }

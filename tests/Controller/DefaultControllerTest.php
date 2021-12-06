@@ -1,20 +1,36 @@
 <?php
 
-use App\DataFixtures\AppFixtures;
-use App\Test\Controller\AbstractControllerTest;
-use Liip\FunctionalTestBundle\Test\WebTestCase;
+namespace App\Tests\Controller;
 
-class DefaultControllerTest extends WebTestCase
+use Symfony\Component\HttpFoundation\Response;
+
+class DefaultControllerTest extends AbstractTestController
 {
-    private $client = null;
-
-    protected function setUp(): Void
+    public function testGuestIndexAction()
     {
-        parent::setUp();
-        self::bootKernel();
-        $this->client = static::createClient();
-        $this->loadFixtures([
-            AppFixtures::class
-        ]);
+        $this->client->request('GET', '/');
+
+        $this->assertEquals(
+            Response::HTTP_FOUND,
+            $this->client->getResponse()->getStatusCode()
+        );
+
+        $crawler = $this->client->followRedirect();
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('form')->count()
+        );
+    }
+
+    public function testIndexAction()
+    {
+        $this->login(false);
+
+        $this->client->request('GET', '/');
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
     }
 }

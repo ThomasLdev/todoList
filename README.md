@@ -56,6 +56,13 @@ bin/console doctrine:migrations:migrate
 bin/console doctrine:fixtures:load
  ```
  
-<h3>Its Done !</h3>
+<h3>Outside of docker, at the project's root, restore the user permissions</h3>
 
-You can now navigate to the <a href="localhost:8000">local URL</a>
+
+ ```
+sudo chown -R $USER ./
+ ```
+ 
+ <h3>Its Done !</h3>
+
+You can now navigate to localhost:8000

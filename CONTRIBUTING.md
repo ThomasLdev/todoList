@@ -33,7 +33,7 @@ That way, we can instantly know which branch does what, and to which issue it is
 vendor/bin/phpunit (--filter YourMethodOrController for individual test)
 ```
 
-4) All green ?Run the code coverage  
+4) All green ? Run the code coverage  
 ```
 XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text . 
 ```

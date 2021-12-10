@@ -13,6 +13,7 @@ class TaskVoter extends Voter
 {
     /**
      * @inheritDoc
+     * @codeCoverageIgnore
      */
     protected function supports(string $attribute, $subject): bool
     {
@@ -24,6 +25,7 @@ class TaskVoter extends Voter
 
     /**
      * @inheritDoc
+     * @codeCoverageIgnore
      */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {

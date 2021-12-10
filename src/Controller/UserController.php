@@ -31,6 +31,8 @@ class UserController extends AbstractController
      */
     public function index(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('view', $this->getUser());
+
         return $this->render('user/index.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
@@ -41,6 +43,8 @@ class UserController extends AbstractController
      */
     public function new(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('edit', $this->getUser());
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -50,7 +54,7 @@ class UserController extends AbstractController
             $user->setRoles($form->get('roles')->getData());
             $this->em->persist($user);
             $this->em->flush();
-
+            $this->addFlash('success', 'Utilisateur crée avec succès !');
             return $this->redirectToRoute('user_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -65,6 +69,8 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user): Response
     {
+        $this->denyAccessUnlessGranted('edit', $this->getUser());
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 

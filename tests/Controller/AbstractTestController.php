@@ -7,9 +7,6 @@ use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class AbstractTestController extends WebTestCase
 {
@@ -32,15 +29,13 @@ class AbstractTestController extends WebTestCase
         ]);
     }
 
-    public function login(KernelBrowser $client, User $user): void
+    protected function login(bool $admin)
     {
-        /** @var Session */
-        $session = $client->getContainer()->get('session');
-        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $session->set('_security_main', serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $client->getCookieJar()->set($cookie);
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('Se connecter')->form();
+        // user_0 = admin
+        $form['username'] = ($admin) ? "user_0" : "user_1";
+        $form['password'] = 'test1234';
+        $this->client->submit($form);
     }
 }

@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity("username")
- * @method string getUserIdentifier()
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -59,6 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function getUserIdentifier(): ?string
     {
         return $this->username;
     }
@@ -128,6 +132,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // TODO: Implement eraseCredentials() method.
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function __call($name, $arguments)
     {
         return (string) $this->email;

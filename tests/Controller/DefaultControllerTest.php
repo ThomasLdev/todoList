@@ -23,9 +23,20 @@ class DefaultControllerTest extends AbstractTestController
         );
     }
 
-    public function testIndexAction()
+    public function testUserIndexAction()
     {
         $this->login(false);
+
+        $this->client->request('GET', '/');
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->client->getResponse()->getStatusCode()
+        );
+    }
+
+    public function testAdminIndexAction()
+    {
+        $this->login(true);
 
         $this->client->request('GET', '/');
         $this->assertEquals(

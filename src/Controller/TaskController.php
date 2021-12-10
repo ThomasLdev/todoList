@@ -53,7 +53,7 @@ class TaskController extends AbstractController
             $task->setUser($this->getUser());
             $this->em->persist($task);
             $this->em->flush();
-
+            $this->addFlash('success', "La tache '".$task->getTitle()."' a bien été crée !");
             return $this->redirectToRoute('task_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,7 +75,7 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-
+            $this->addFlash('success', "La tache '".$task->getTitle()."' a bien été modifiée !");
             return $this->redirectToRoute('task_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -103,7 +103,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/delete", name="task_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="task_delete")
      * @IsGranted("TASK_DELETE", subject="task"),
      * message="Vous ne pouvez pas modifier une tâche qui ne vous appartient pas =/"
      */

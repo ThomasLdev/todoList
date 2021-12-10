@@ -66,3 +66,5 @@ sudo chown -R $USER ./
  <h3>Its Done !</h3>
 
 You can now navigate to localhost:8000
+
+Coverage test at localhost:8000/index.html

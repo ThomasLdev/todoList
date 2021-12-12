@@ -31,9 +31,24 @@ class TaskController extends AbstractController
     public function index(TaskRepository $taskRepository): Response
     {
         if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-            $tasks = $taskRepository->findBy(['user' => null]);
+            $tasks = $taskRepository->findBy(['user' => [null, $this->getUser()], 'isDone' => false]);
         } else {
-            $tasks = $this->getUser()->getTasks();
+            $tasks = $taskRepository->findBy(['user' => $this->getUser(), 'isDone' => false]);
+        }
+        return $this->render('task/index.html.twig', [
+            'tasks' => $tasks
+        ]);
+    }
+
+    /**
+     * @Route("/done", name="task_list_done", methods={"GET"})
+     */
+    public function indexDone(TaskRepository $taskRepository): Response
+    {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+            $tasks = $taskRepository->findBy(['user' => null, 'isDone' => true]);
+        } else {
+            $tasks = $taskRepository->findBy(['user' => $this->getUser(), 'isDone' => true]);
         }
         return $this->render('task/index.html.twig', [
             'tasks' => $tasks
@@ -53,7 +68,7 @@ class TaskController extends AbstractController
             $task->setUser($this->getUser());
             $this->em->persist($task);
             $this->em->flush();
-            $this->addFlash('success', "La tache '".$task->getTitle()."' a bien été crée !");
+            $this->addFlash('success', "La tache '" . $task->getTitle() . "' a bien été crée !");
             return $this->redirectToRoute('task_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -75,7 +90,7 @@ class TaskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', "La tache '".$task->getTitle()."' a bien été modifiée !");
+            $this->addFlash('success', "La tache '" . $task->getTitle() . "' a bien été modifiée !");
             return $this->redirectToRoute('task_list', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -92,14 +107,13 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task): RedirectResponse
     {
-        if ($task->getUser() === $this->getUser()) {
-            $task->toggle(!$task->isDone());
-            $this->em->flush();
-            $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
-        } else {
-            throw $this->createAccessDeniedException();
+        $task->toggle(!$task->isDone());
+        $this->em->flush();
+        $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
+        if($task->isDone() === true) {
+            return $this->redirectToRoute('task_list');
         }
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('task_list_done');
     }
 
     /**
@@ -111,7 +125,7 @@ class TaskController extends AbstractController
     {
         $this->em->remove($task);
         $this->em->flush();
-        $this->addFlash('success', "La tache '".$task->getTitle()."' a bien été supprimée !");
+        $this->addFlash('success', "La tache '" . $task->getTitle() . "' a bien été supprimée !");
         return $this->redirectToRoute('task_list', [], Response::HTTP_SEE_OTHER);
     }
 }

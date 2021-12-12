@@ -17,8 +17,6 @@ class TaskVoter extends Voter
      */
     protected function supports(string $attribute, $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, ['TASK_EDIT', 'TASK_DELETE', 'TASK_TOGGLE'])
             && $subject instanceof Task;
     }

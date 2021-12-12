@@ -146,6 +146,11 @@ class TaskControllerTest extends AbstractTestController
         $crawler = $this->client->followRedirect();
 
         $this->assertGreaterThan(0, $crawler->filter('div.alert.alert-success')->count());
+
+        $crawler = $this->client->request('GET', '/tasks/done');
+        $this->assertResponseIsSuccessful();
+
+        $this->assertEquals(6, $crawler->filter('.thumbnail')->count());
     }
 
     public function testUserFailToggleTaskAction()

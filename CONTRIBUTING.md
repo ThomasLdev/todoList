@@ -45,3 +45,11 @@ And make sure that it still has the same level as before (90%+)
 <h2>3) How to code ?</h2>
 
 This project follows the PSR-2 standard and the PSR-4 autoload standards.
+
+Please follow the Symfony 5 coding standards : <br>
+
+    - Autowire all Interface, Entity or Service you can <br>
+    - Use param converters <br>
+    - Use Voters for any new Route, make a new one if necessary <br>
+    - WIP : respect the phpstan level 7 constraints <br>
+    - WIP : respect the stylehint constraints

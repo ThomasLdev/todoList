@@ -116,6 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @return Collection
+     * @codeCoverageIgnore
      */
     public function getTasks(): Collection
     {
